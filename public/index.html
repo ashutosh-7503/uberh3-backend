@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>H3 Demand Heatmap</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: sans-serif; background: #111; color: white; }
+    #map { height: 100vh; width: 100vw; }
+    #stats {
+      position: absolute; top: 16px; right: 16px; z-index: 1000;
+      background: rgba(0,0,0,0.75); border-radius: 10px;
+      padding: 14px 18px; display: flex; flex-direction: column; gap: 8px;
+    }
+    .stat { font-size: 13px; color: #aaa; }
+    .stat span { color: white; font-weight: 500; font-size: 16px; display: block; }
+  </style>
+</head>
+<body>
+
+<div id="map"></div>
+<div id="stats">
+  <div class="stat">Active cells <span id="totalCells">0</span></div>
+  <div class="stat">Surge zones <span id="surgeCells">0</span></div>
+  <div class="stat">Last updated <span id="lastUpdated">—</span></div>
+</div>
+
+<script>
+  const map = L.map('map').setView([12.9716, 77.5946], 13);
+
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    attribution: '© OpenStreetMap © CARTO'
+  }).addTo(map);
+
+  const colorMap = {
+    none:  'rgba(255,255,255,0.05)',
+    low:   'rgba(99,153,34,0.5)',
+    high:  'rgba(239,159,39,0.6)',
+    surge: 'rgba(226,75,74,0.75)',
+  };
+
+  let polygonLayers = [];
+
+  async function fetchAndDraw() {
+    const res = await fetch('/api/heatmap?lat=12.9716&lng=77.5946&radius=5');
+    const data = await res.json();
+
+    polygonLayers.forEach(p => map.removeLayer(p));
+    polygonLayers = [];
+
+    data.cells.forEach(cell => {
+      if (cell.demandLevel === 'none') return;
+
+      const latLngs = cell.boundary.map(([lat, lng]) => [lat, lng]);
+      const polygon = L.polygon(latLngs, {
+        color: colorMap[cell.demandLevel],
+        fillColor: colorMap[cell.demandLevel],
+        fillOpacity: 1,
+        weight: 0.5,
+      }).addTo(map);
+
+      polygon.bindTooltip(
+        `Cell: ${cell.cellId}<br>Demand: ${cell.demand}<br>Level: ${cell.demandLevel}`,
+        { sticky: true }
+      );
+
+      polygonLayers.push(polygon);
+    });
+
+    const surgeCells = data.cells.filter(c => c.demandLevel === 'surge').length;
+    document.getElementById('totalCells').textContent = data.cells.length;
+    document.getElementById('surgeCells').textContent = surgeCells;
+    document.getElementById('lastUpdated').textContent = new Date().toLocaleTimeString();
+  }
+
+  fetchAndDraw();
+  setInterval(fetchAndDraw, 2000);
+</script>
+</body>
+</html>

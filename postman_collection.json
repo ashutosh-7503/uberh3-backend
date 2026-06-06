@@ -1,0 +1,77 @@
+{
+  "info": {
+    "name": "Uber H3 Heatmap API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Get Heatmap",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:3000/api/heatmap?lat=12.9716&lng=77.5946&radius=3",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "heatmap"],
+          "query": [
+            { "key": "lat", "value": "12.9716" },
+            { "key": "lng", "value": "77.5946" },
+            { "key": "radius", "value": "3" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get Heatmap - Missing lat",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:3000/api/heatmap?lng=77.5946",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "heatmap"],
+          "query": [
+            { "key": "lng", "value": "77.5946" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get Heatmap - Invalid lat",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:3000/api/heatmap?lat=abc&lng=77.5946",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "heatmap"],
+          "query": [
+            { "key": "lat", "value": "abc" },
+            { "key": "lng", "value": "77.5946" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get Heatmap - Large radius",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:3000/api/heatmap?lat=12.9716&lng=77.5946&radius=5",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "heatmap"],
+          "query": [
+            { "key": "lat", "value": "12.9716" },
+            { "key": "lng", "value": "77.5946" },
+            { "key": "radius", "value": "5" }
+          ]
+        }
+      }
+    }
+  ]
+}
