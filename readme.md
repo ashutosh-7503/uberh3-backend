@@ -1,3 +1,4 @@
+![Heatmap](image.png)
 # H3 Demand Heatmap API
 
 A Node.js backend that simulates Uber's H3-based demand heatmap. Ride requests are bucketed into hexagonal H3 cells, aggregated in Redis, and served via a REST API with a live map visualization.
