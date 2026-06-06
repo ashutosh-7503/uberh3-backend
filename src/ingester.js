@@ -6,8 +6,8 @@ export async function startIngester() {
   setInterval(async () => {
     const centerLat = 12.9716,
       centerLong = 77.5946;
-    const randomNumber1 = (Math.random()-0.5) * 0.05;
-    const randomNumber2 = (Math.random()-0.5) * 0.05;
+    const randomNumber1 = (Math.random()-0.5) * 0.005;
+    const randomNumber2 = (Math.random()-0.5) * 0.005;
     const randomLat = centerLat + randomNumber1,
       randomLong = centerLong + randomNumber2;
     const cellId = latLngToCell(randomLat, randomLong,H3_RESOLUTION);
